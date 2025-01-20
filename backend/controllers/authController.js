@@ -12,21 +12,23 @@ const otpGenerator = require("otp-generator");
 
 //middleware
 exports.getUser = async (req, res, next) => {
-  const username = req.session.username;
-  // console.log("the username is:", username);
-  if (!username) {
+  const { email } = req.params;
+  // console.log(email);
+  // console.log("the email from get user is:", email);
+  if (!email) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
   try {
-    const user = await User.findOne({ username }).select("-password");
+    const user = await User.findOne({ email }).select("-password");
+    // console.log(user);
     if (!user) {
       return res
         .status(404)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "Email not found" });
     }
     req.user = user;
-    next();
-    // return res.status(200).json({ success: true, user });
+    // next();
+    return res.status(200).json({ success: true, user });
   } catch (err) {
     console.log("error from getUser");
     return res.status(404).json({ success: false, message: "Server error" });
@@ -36,7 +38,7 @@ exports.getUser = async (req, res, next) => {
 exports.verifyUser = async (req, res, next) => {
   try {
     const { email } = req.method == "GET" ? req.query : req.body;
-
+    // console.log(email);
     // check the user existance
     let exist = await User.findOne({ email });
     if (!exist)
@@ -44,6 +46,7 @@ exports.verifyUser = async (req, res, next) => {
         .status(404)
         .send({ error: "Can't find User with this email address!" });
     next();
+    // return res.status(200).send({ exist });
   } catch (error) {
     return res.status(404).send({ error: "Authentication Error" });
   }

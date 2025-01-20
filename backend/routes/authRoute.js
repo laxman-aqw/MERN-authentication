@@ -4,7 +4,7 @@ const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const registerMail = require("../middleware/mailer");
 
-router.get("/user", authController.getUser);
+router.get("/user/:email", authController.getUser);
 router.post("/login", authController.postLogin);
 router.post("/register", authController.postRegister);
 router.put(
