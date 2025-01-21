@@ -103,7 +103,6 @@ exports.postRegister = async (req, res) => {
 
 exports.postLogin = async (req, res) => {
   const user = req.body;
-
   try {
     if (!user.email || !user.password) {
       return res
@@ -137,9 +136,12 @@ exports.postLogin = async (req, res) => {
     });
     req.session.token = token;
     console.log(token);
-    return res
-      .status(200)
-      .json({ success: true, message: "Log in successful", token });
+    return res.status(200).json({
+      success: true,
+      validUser,
+      message: "Log in successful",
+      token,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ success: false, message: "Login failed" });
