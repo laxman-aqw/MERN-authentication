@@ -18,6 +18,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.29",
     "mongodb": "^6.12.0",

@@ -1,16 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const { registerValidation, validate } = require("../middleware/validators");
 const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const registerMail = require("../middleware/mailer");
 
 router.get("/user/:email", authController.getUser);
 router.post("/login", authController.postLogin);
-router.post("/register", authController.postRegister);
+router.post(
+  "/register",
+  registerValidation,
+  validate,
+  authController.postRegister
+);
 router.put(
   "/updateUser/:id",
   auth.authMiddleware,
   authController.getUser,
+  registerValidation,
+  validate,
   authController.updateUser
 );
 
