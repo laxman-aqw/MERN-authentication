@@ -14,10 +14,10 @@ router.post(
   authController.postRegister
 );
 router.put(
-  "/updateUser/:id",
+  "/updateUser/:email",
   auth.authMiddleware,
-  registerValidation,
-  validate,
+  // registerValidation,
+  // validate,
   authController.updateUser
 );
 

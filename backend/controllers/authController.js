@@ -151,13 +151,14 @@ exports.postLogin = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const user = req.user;
-    console.log(user);
+    // console.log(user);
     const updatedUser = req.body;
-    console.log("the user updating the user is" + user);
-    console.log(user._id);
-    console.log(req.params.id);
+    const { email } = req.params;
+    // console.log("the user updating the user is" + user);
+    // console.log(user._id);
+    // console.log(req.params.id);
 
-    if (user._id.toString() !== req.params.id && user.role !== "admin") {
+    if (user.email !== email && user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "You are not authorized to update this user.",
