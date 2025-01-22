@@ -4,7 +4,9 @@ const User = require("../model/UserModel");
 exports.authMiddleware = async (req, res, next) => {
   const authHeader = req.header("Authorization");
   // Check if the Authorization header is present
+  console.log(authHeader);
   if (!authHeader) {
+    console.log("no auth header");
     return res.status(401).json({
       success: false,
       message: "No token provided, authorization denied",
@@ -28,7 +30,7 @@ exports.authMiddleware = async (req, res, next) => {
     // console.log(decoded);
     // Fetch the user from the database
     req.user = await User.findById(decoded.userId);
-    console.log(req.user);
+    // console.log(req.user.email);
     if (!req.user) {
       return res.status(401).json({
         success: false,

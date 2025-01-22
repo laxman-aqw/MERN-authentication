@@ -12,8 +12,8 @@ const otpGenerator = require("otp-generator");
 
 //middleware
 exports.getUser = async (req, res, next) => {
-  const { email } = req.params;
-  // console.log(email);
+  const email = req.params.email || req.user?.email;
+  console.log(email);
   // console.log("the email from get user is:", email);
   if (!email) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -151,6 +151,7 @@ exports.postLogin = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const user = req.user;
+    console.log(user);
     const updatedUser = req.body;
     console.log("the user updating the user is" + user);
     console.log(user._id);
@@ -289,7 +290,10 @@ exports.resetPassword = async (req, res) => {
 
 exports.getToken = async (req, res) => {
   if (req.session.token) {
+    console.log(req.session.token);
     return res.status(200).json({ token: req.session.token });
+  } else {
+    console.log("No token!");
+    return res.status(401).json({ message: "Unauthorized" });
   }
-  return res.status(401).json({ message: "Unauthorized" });
 };

@@ -16,7 +16,6 @@ router.post(
 router.put(
   "/updateUser/:id",
   auth.authMiddleware,
-  authController.getUser,
   registerValidation,
   validate,
   authController.updateUser
