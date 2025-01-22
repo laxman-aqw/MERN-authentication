@@ -4,8 +4,7 @@ const User = require("../model/UserModel");
 exports.authMiddleware = async (req, res, next) => {
   const authHeader = req.header("Authorization");
   // console.log("This is authHeader", authHeader);
-  // Check if the Authorization header is present
-  // console.log(authHeader);
+
   if (!authHeader) {
     console.log("no auth header");
     return res.status(401).json({
@@ -15,7 +14,6 @@ exports.authMiddleware = async (req, res, next) => {
   }
   const tokenParts = authHeader.split(" ");
   // console.log(tokenParts);
-  // Validate token format
   if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
     return res
       .status(401)
@@ -38,7 +36,7 @@ exports.authMiddleware = async (req, res, next) => {
       });
     }
 
-    next(); // Proceed to the next middleware or route handler
+    next();
   } catch (err) {
     return res.status(401).json({
       success: false,

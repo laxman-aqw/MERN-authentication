@@ -151,12 +151,8 @@ exports.postLogin = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const user = req.user;
-    // console.log(user);
     const updatedUser = req.body;
     const { email } = req.params;
-    // console.log("the user updating the user is" + user);
-    // console.log(user._id);
-    // console.log(req.params.id);
 
     if (user.email !== email && user.role !== "admin") {
       return res.status(403).json({

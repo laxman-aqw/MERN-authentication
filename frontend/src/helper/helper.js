@@ -68,11 +68,6 @@ export async function updateUser(response) {
     });
 
     console.log("This token is from updateUser frontend", token);
-    // if (response.id) {
-    //   console.log("ID from response:", response.id);
-    // } else {
-    //   console.log("No ID found in response");
-    // }
     const { data } = await axios.put(
       `/api/updateUser/${response.email}`,
       response,
@@ -120,7 +115,7 @@ export async function verifyOTP({ code }) {
       throw new Error(`Verification failed with status: ${status}`);
     }
 
-    return data; // Returning data can give more context, like a success message or any other useful info
+    return data;
   } catch (err) {
     console.error("Error verifying OTP:", err);
     return {
