@@ -33,7 +33,7 @@ export const Profile = () => {
       let updatePromise = updateUser(values);
       toast.promise(updatePromise, {
         loading: "Updating your changes...",
-        success: <b>Updated successfully</b>,
+        success: <b>Updated!</b>,
         error: <b>Could not update</b>,
       });
     },
