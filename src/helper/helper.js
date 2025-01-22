@@ -3,9 +3,10 @@ import axios from "axios";
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
 // authenticate function
-export async function getUser({ username }) {
+export async function getUser({ email }) {
   try {
-    const { data } = await axios.get(`/api/user/${username}`);
+    const { data } = await axios.get(`/api/user/${email}`);
+    // console.log("from frontend getUser funciton", { data });
     return { data };
   } catch (err) {
     return { error: "Username doesn't exist!" };
@@ -38,27 +39,48 @@ export async function registerUser(credentials) {
   }
 }
 
-export async function login({ username, password }) {
+export async function login({ email, password }) {
   try {
-    if (username) {
-      const { data } = await axios.post("/api/login", { username, password });
+    if (email) {
+      const { data } = await axios.post(
+        "/api/login",
+        { email, password },
+        { withCredentials: true }
+      );
+      if (data.success === false) {
+        throw new Error(data.message); // Throw error if login failed (incorrect password or other issues)
+      }
+      console.log("this is from helper login", data);
       return data;
     }
-  } catch (err) {
-    return err;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Something went wrong");
   }
 }
 
-export async function updateUser({ response }) {
+export async function updateUser(response) {
   try {
+    console.log(response);
     const {
       data: { token },
     } = await axios.get("/api/getToken", {
-      withCredentials: true, // Ensure the session cookie is included
+      withCredentials: true,
     });
-    const { data } = await axios.put("/api/updateUser", response, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+
+    console.log("This token is from updateUser frontend", token);
+    // if (response.id) {
+    //   console.log("ID from response:", response.id);
+    // } else {
+    //   console.log("No ID found in response");
+    // }
+    const { data } = await axios.put(
+      `/api/updateUser/${response.email}`,
+      response,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log(data);
     return data;
   } catch (err) {
     return err;

@@ -3,28 +3,39 @@ import { Link } from "react-router-dom";
 import avatar from "../assets/profile.png";
 import styles from "../styles/Username.module.css";
 import extend from "../styles/Profile.module.css";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useFormik } from "formik";
 import { profileValidation } from "../helper/validate";
 import convertToBase64 from "../helper/convert";
+import useFetch from "../hooks/fetchHooks";
+import { useAuthStore } from "../store/store";
+import { updateUser } from "../helper/helper";
 
 export const Profile = () => {
   const [file, setFile] = useState();
-
+  const { email } = useAuthStore((state) => state.auth);
+  const [{ isLoading, apiData, serverError }] = useFetch(`/user/${email}`);
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      address: "",
-      mobile: "",
+      firstName: apiData?.user.firstName || "",
+      lastName: apiData?.user.lastName || "",
+      email: apiData?.user.email || "",
+      address: apiData?.user.address || "",
+      mobile: apiData?.user.mobile || "",
     },
+    enableReinitialize: true,
     validate: profileValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
       values = await Object.assign(values, { profile: file || "" });
-      console.log(values);
+      console.log("these are the values", values);
+      let updatePromise = updateUser(values);
+      toast.promise(updatePromise, {
+        loading: "Updating...",
+        success: <b>Updated successfully</b>,
+        error: <b>Could not update</b>,
+      });
     },
   });
 
@@ -33,6 +44,10 @@ export const Profile = () => {
     setFile(base64);
   };
 
+  if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
+
+  if (serverError)
+    return <h1 className="text-xl text-red-500">{serverError.message}</h1>;
   return (
     <div className="container mx-auto mt-5 ">
       <Toaster position="top-center" reverseOrder={false}></Toaster>
@@ -52,7 +67,7 @@ export const Profile = () => {
             <div className="profile flex justify-center py-4">
               <label htmlFor="profile">
                 <img
-                  src={file || avatar}
+                  src={apiData?.user.profile || avatar}
                   alt={avatar}
                   className={`${styles.profile_img} ${extend.profile_img}`}
                 ></img>

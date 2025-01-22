@@ -21,7 +21,7 @@ export const Username = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      console.log(values.email);
+      // console.log(values.email);
       setEmail(values.email);
       navigate("/password");
     },
@@ -32,21 +32,20 @@ export const Username = () => {
       <div className="flex justify-center items-center h-full">
         <div className={styles.glass}>
           <div className="title flex flex-col items-center">
-            <h4 className="text-5xl font-bold">Welcome back!</h4>
+            <div className="profile flex justify-center py-4">
+              {/* <img
+                src={avatar}
+                alt={avatar}
+                className={styles.profile_img}
+              ></img> */}
+              <h1 className="text-3xl">Company logo</h1>
+            </div>
             <span className="py-4 text-xl w-2/3 text-center text-gray-500">
-              Please enter your email here
+              Sign in with your email
             </span>
           </div>
 
           <form className="py-1" onSubmit={formik.handleSubmit}>
-            <div className="profile flex justify-center py-4">
-              <img
-                src={avatar}
-                alt={avatar}
-                className={styles.profile_img}
-              ></img>
-            </div>
-
             <div className="textbox flex flex-col items-center gap-6">
               <input
                 {...formik.getFieldProps("email")}
