@@ -83,12 +83,13 @@ export async function updateUser(response) {
   }
 }
 
-export async function generateOTP() {
+export async function generateOTP(email) {
   try {
     const {
       data: { code, user },
       status,
-    } = await axios.get("/api/generateOTP");
+    } = await axios.get(`/api/generateOTP/${email}`);
+    console.log(code, user);
     if (status === 201) {
       const { username, email } = user;
       const text = `Dear ${username}, Your password recovery otp is ${code}.`;
@@ -108,14 +109,11 @@ export async function generateOTP() {
 
 export async function verifyOTP({ code }) {
   try {
-    const { status, data } = await axios.get("/verifyOTP", {
-      params: { code },
-    });
+    const { status, data } = await axios.get(`/verifyOTP/${code}`);
 
     if (status !== 200) {
       throw new Error(`Verification failed with status: ${status}`);
     }
-
     return data;
   } catch (err) {
     console.error("Error verifying OTP:", err);
@@ -139,15 +137,14 @@ export async function resetPassword(password) {
 
 export async function getUserEmailFromtoken() {
   try {
-    const {
-      data: { token },
-    } = await axios.get("/api/getToken", {
+    const response = await axios.get("/api/getToken", {
       withCredentials: true,
     });
+    const { token } = response.data;
 
     if (!token) {
       console.log("No token found");
-      return null; // Return null or a default value indicating no token
+      return Promise.reject("Cannot find Token");
     }
 
     const decoded = jwtDecode(token);

@@ -24,7 +24,7 @@ router.put(
 router.post("/authenticate", authController.verifyUser, (req, res) =>
   res.end()
 );
-router.get("/generateOTP", authController.generateOTP);
+router.get("/generateOTP/:email", authController.generateOTP);
 router.get("/verifyOTP", authController.verifyOTP);
 router.put("/resetPassword", authController.resetPassword);
 router.post("/registerMail", registerMail.registerMail);

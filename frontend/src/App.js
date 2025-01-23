@@ -9,6 +9,8 @@ import { Password } from "./components/Password";
 import { Username } from "./components/Username";
 import { PageNotFound } from "./components/PageNotFound";
 
+import { AuthorizeUser, ProtectRoute } from "./middleware/auth";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,11 +30,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/password",
-    element: <Password></Password>,
+    element: (
+      <ProtectRoute>
+        <Password></Password>,
+      </ProtectRoute>
+    ),
   },
   {
     path: "/profile",
-    element: <Profile></Profile>,
+    element: (
+      <AuthorizeUser>
+        <Profile></Profile>
+      </AuthorizeUser>
+    ),
   },
   {
     path: "*",

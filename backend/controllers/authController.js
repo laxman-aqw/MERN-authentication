@@ -185,9 +185,9 @@ exports.updateUser = async (req, res) => {
 
 exports.generateOTP = async (req, res) => {
   // Check if the user is logged in by verifying the session
-  const username = req.session.username;
+  const { email } = req.params;
 
-  if (!username) {
+  if (!email) {
     return res
       .status(401)
       .json({ success: false, message: "User not logged in" });
@@ -204,7 +204,7 @@ exports.generateOTP = async (req, res) => {
     req.session.OTP = otp; // Store OTP in session for later verification
     console.log("OTP generated:", req.session.OTP);
 
-    const user = await User.findOne({ username }).select("-password");
+    const user = await User.findOne({ email }).select("-password");
 
     if (!user) {
       return res
@@ -224,14 +224,14 @@ exports.generateOTP = async (req, res) => {
 };
 
 exports.verifyOTP = async (req, res) => {
-  const { code } = req.query;
-  const sessionOTP = req.session.OTP;
-  if (!sessionOTP) {
+  const { code } = req.params;
+  // const sessionOTP = req.session.OTP;
+  if (!code) {
     return res
       .status(400)
       .json({ message: "OTP has expired or is not generated" });
   }
-  console.log("req.session.otp " + req.session.OTP);
+  // console.log("req.session.otp " + req.session.OTP);
   console.log("code from query " + code);
   if (req.session.OTP === code) {
     // req.session.OTP = null;

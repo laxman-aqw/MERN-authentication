@@ -11,40 +11,52 @@ export default function useFetch(query) {
     status: null,
     serverError: null,
   });
+
   useEffect(() => {
-    const fetchData = async (query) => {
+    let isMounted = true; // Prevent state updates on unmounted component
+
+    const fetchData = async () => {
       try {
-        const { email } = !query ? await getUserEmailFromtoken() : "";
+        const { email } = !query ? await getUserEmailFromtoken() : {};
         setData((prev) => ({ ...prev, isLoading: true }));
 
         const { data, status } = !query
           ? await axios.get(`/api/user/${email}`)
-          : axios.get(`/api/${query}`);
-        // console.log("API response:", data, status);
-        if (status >= 200 && status < 300) {
-          setData((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiData: data,
-            status,
-          }));
-        } else {
-          // Handle non-2xx status codes (e.g., 4xx, 5xx)
-          setData((prev) => ({
-            ...prev,
-            isLoading: false,
-            serverError: `Error: ${status}`,
-          }));
+          : await axios.get(`/api/${query}`);
+
+        if (isMounted) {
+          if (status >= 200 && status < 300) {
+            setData({
+              isLoading: false,
+              apiData: data,
+              status,
+              serverError: null,
+            });
+          } else {
+            setData({
+              isLoading: false,
+              apiData: undefined,
+              status,
+              serverError: `Error: ${status}`,
+            });
+          }
         }
       } catch (error) {
-        setData((prev) => ({
-          ...prev,
-          isLoading: false,
-          serverError: error,
-        }));
+        if (isMounted) {
+          setData({
+            isLoading: false,
+            apiData: undefined,
+            status: null,
+            serverError: error,
+          });
+        }
       }
     };
+
     fetchData();
-  }, [query]);
+
+    return () => (isMounted = false); // Cleanup on unmount
+  }, [query]); // Only refetch when query changes
+
   return [getData, setData];
 }

@@ -31,6 +31,8 @@ export const Profile = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
+      // if (!apiData?.user) return;
+
       values = await Object.assign(values, {
         profile: file || apiData.user.profile || "",
       });
@@ -51,6 +53,8 @@ export const Profile = () => {
 
   const logoutHandler = async () => {
     await logout();
+    setFile(null); // Reset the uploaded file state
+    formik.resetForm(); // Reset the form state
     navigate("/");
   };
 

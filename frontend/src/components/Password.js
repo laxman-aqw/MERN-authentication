@@ -11,6 +11,7 @@ import { login } from "../helper/helper";
 export const Password = () => {
   const navigate = useNavigate();
   const { email } = useAuthStore((state) => state.auth);
+  console.log("from password", email);
   const [{ isLoading, apiData, serverError }] = useFetch(`/user/${email}`);
   // console.log("email from password", email);
   // console.log("api data from password", apiData);
