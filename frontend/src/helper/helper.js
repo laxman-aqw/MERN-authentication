@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
@@ -133,5 +134,36 @@ export async function resetPassword(password) {
     return { data, status };
   } catch (err) {
     return err;
+  }
+}
+
+export async function getUserEmailFromtoken() {
+  try {
+    const {
+      data: { token },
+    } = await axios.get("/api/getToken", {
+      withCredentials: true,
+    });
+
+    if (!token) {
+      console.log("No token found");
+      return null; // Return null or a default value indicating no token
+    }
+
+    const decoded = jwtDecode(token);
+    console.log("Decoded token:", decoded);
+    return decoded;
+  } catch (error) {
+    console.error("Error getting token:", error);
+    return null; // Handle any other errors (e.g., network issues)
+  }
+}
+
+export async function logout() {
+  const response = await axios.post("/api/logout", { withCredentials: true });
+  if (response.status === 200) {
+    console.log("Logout successful");
+  } else {
+    console.error("Logout failed");
   }
 }

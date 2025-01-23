@@ -8,13 +8,16 @@ import { useFormik } from "formik";
 import { profileValidation } from "../helper/validate";
 import convertToBase64 from "../helper/convert";
 import useFetch from "../hooks/fetchHooks";
-import { useAuthStore } from "../store/store";
+// import { useAuthStore } from "../store/store";
 import { updateUser } from "../helper/helper";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../helper/helper";
 
 export const Profile = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState();
-  const { email } = useAuthStore((state) => state.auth);
-  const [{ isLoading, apiData, serverError }] = useFetch(`/user/${email}`);
+  // const { email } = useAuthStore((state) => state.auth);
+  const [{ isLoading, apiData, serverError }] = useFetch();
   const formik = useFormik({
     initialValues: {
       firstName: apiData?.user.firstName || "",
@@ -28,7 +31,9 @@ export const Profile = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      values = await Object.assign(values, { profile: file || "" });
+      values = await Object.assign(values, {
+        profile: file || apiData.user.profile || "",
+      });
       console.log("these are the values", values);
       let updatePromise = updateUser(values);
       toast.promise(updatePromise, {
@@ -44,7 +49,12 @@ export const Profile = () => {
     setFile(base64);
   };
 
-  if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
+  const logoutHandler = async () => {
+    await logout();
+    navigate("/");
+  };
+
+  if (isLoading) return <h1 className="text-2xl font-bold">Loading...</h1>;
 
   if (serverError)
     return <h1 className="text-xl text-red-500">{serverError.message}</h1>;
@@ -67,7 +77,7 @@ export const Profile = () => {
             <div className="profile flex justify-center py-4">
               <label htmlFor="profile">
                 <img
-                  src={apiData?.user.profile || avatar}
+                  src={file || apiData?.user.profile || avatar}
                   alt={avatar}
                   className={`${styles.profile_img} ${extend.profile_img}`}
                 ></img>
@@ -123,10 +133,9 @@ export const Profile = () => {
 
             <div className="text-center pt-4">
               <span className="text-gray-500">
-                Logout? &nbsp;
-                <Link className="text-red-500" to="/recovery">
+                <button onClick={logoutHandler} className="text-red-500" to="/">
                   Log out.
-                </Link>
+                </button>
               </span>
             </div>
           </form>

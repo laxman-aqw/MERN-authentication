@@ -6,6 +6,7 @@
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "formik": "^2.4.6",
+    "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.1",

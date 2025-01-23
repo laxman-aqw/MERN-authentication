@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getUserEmailFromtoken } from "../helper/helper";
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
@@ -11,11 +12,14 @@ export default function useFetch(query) {
     serverError: null,
   });
   useEffect(() => {
-    if (!query) return;
-    const fetchData = async () => {
+    const fetchData = async (query) => {
       try {
+        const { email } = !query ? await getUserEmailFromtoken() : "";
         setData((prev) => ({ ...prev, isLoading: true }));
-        const { data, status } = await axios.get(`/api/${query}`);
+
+        const { data, status } = !query
+          ? await axios.get(`/api/user/${email}`)
+          : axios.get(`/api/${query}`);
         // console.log("API response:", data, status);
         if (status >= 200 && status < 300) {
           setData((prev) => ({

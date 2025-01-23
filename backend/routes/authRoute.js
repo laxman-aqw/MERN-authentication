@@ -29,5 +29,6 @@ router.get("/verifyOTP", authController.verifyOTP);
 router.put("/resetPassword", authController.resetPassword);
 router.post("/registerMail", registerMail.registerMail);
 router.get("/getToken", authController.getToken);
+router.post("/logout", authController.logout);
 
 module.exports = router;

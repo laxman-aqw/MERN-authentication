@@ -4,12 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
 
-// import mongoose from "mongoose";
-// import User from "../model/UserModel.js"; // Ensure to add .js
-// import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
-// import otpGenerator from "otp-generator";
-
 //middleware
 exports.getUser = async (req, res, next) => {
   const email = req.params.email || req.user?.email;
@@ -293,4 +287,15 @@ exports.getToken = async (req, res) => {
     console.log("No token!");
     return res.status(401).json({ message: "Unauthorized" });
   }
+};
+
+exports.logout = async (req, res) => {
+  req.session.token = null;
+  console.log(req.session.token);
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Logout Failed", success: false });
+    }
+    res.status(200).send("Logout Succesful");
+  });
 };
